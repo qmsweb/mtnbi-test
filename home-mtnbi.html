@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الرئيسية  </title>
+    <style>
+        * { box-sizing: border-box; margin: 20; padding: 0; }
+
+        body {
+            background-color: #f9f9f9;
+            color: #000;
+            line-height: 1.6;
+            padding: 0px;
+        }
+
+        h1, h2 {
+            text-align: right;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .horizontal-list {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 10px 0;
+        }
+
+        .item {
+            flex: 0 0 auto;
+            width: 200px;
+            text-align: right;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #fff;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .item img {
+            width: 100%;
+            height: auto;
+        }
+      
+       .video-item img {
+            aspect-ratio: 3 / 4; /* أبعاد 3:4 للمرئيات */
+        }
+        .audio-item img {
+            aspect-ratio: 1 / 1; /* أبعاد مربعة للصوتيات */
+        }
+
+
+
+        .item-title {
+            padding: 10px;
+            font-size: 16px;
+            color: #000;
+            font-weight: bold;
+        }
+
+        .item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title img {
+            width: 24px; /* حجم الأيقونة */
+            height: 24p;
+        }
+
+        @media (max-width: 768px) {
+            .item {
+                width: 150px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .item {
+                width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1> </h1>
+
+    <div class="section">
+        <div class="section-title">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg77seeJqNFHhHhtUDHQnrzbWiBwNwFI9b9VKqdt-6Z3sFU_amaGCjP4mhGQQhWEJ4Tp_aoZEWuGITNI40Fq9cVq72uPtjZ2bs4yws0ZWjZkYcNHwkoVuw_fAmoSshwtfYYbdcZ1hdGvwI8AkNR36CElVThW8-QmV4vytsm3yY5S_QnRMCoZly7EcACs7Y/s1600/play_ic.png" alt="مرئيات">
+            <h2>المرئيات</h2>
+        </div>
+        <div class="horizontal-list" id="videoList"></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjlWCuG9QOc8CJ80gJrho1jfFXrnK5K0vbmfPE8i0iByMQbtcwzk8nNnv-E0y5v1p-BE2b_LBgFZKL4Z8Ubw77k-nJexY4st0yRhtQ8zLT0PfYP4GKvVscL6zN-_nVbrr9Gc4Gj7M9JBG4hT9D0tREEAKj0nKGWu1v951xAFqa27GnK7ciqsNmytv5zo7Q/s1600/music_icon.png" alt="صوتيات">
+            <h2>الصوتيات</h2>
+        </div>
+        <div class="horizontal-list" id="audioList"></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhiIPXSIrOuS96qjNIgZE8qQulMm7s7HPuskqZGjRS9FYKvcY2iNUDIgSxNK6Vzrd21AhDG4dekjSOKAFF7ctkmjBGoHYeeOXsmr2YwERvtYy4qx4SX9lsOrSiloU7nIU9KsizHhlkw-XYVLxE_HYzc_BjY1bddzh2cG2tu2r9-UQ-5jgA14tKHCbvK6yk/s1600/books_tw8.png" alt="كتب">
+            <h2>الكتب</h2>
+        </div>
+        <div class="horizontal-list" id="bookGrid"></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjlH0-Uym4v2NYT95edhTV7qSDTW7nH8AaWYJCDMnJ2dSY7MS576BLk4Yhi9lsd0eMIKvzSikdFIxdg4YQMldGFMw-HbsvtRtqsQB31glAjikUuWbzr5qQtbbBmyQLDD3l6QA9RXDFpXvQ-oTrFbvEfOtXPxmJxTI8PDy096ETme6zQ0fvT4l9s8_G7lss/s1600/article_ic.png" alt="أشعار">
+            <h2>الأشعار</h2>
+        </div>
+        <div class="horizontal-list" id="bookList"></div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+
+    <script>
+        // إعداد Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDErdK7mjrXUtBYR28U7JIpbFi5RHWM9zM",
+            authDomain: "momentschat.firebaseapp.com",
+            databaseURL: "https://momentschat.firebaseio.com",
+            projectId: "momentschat",
+            storageBucket: "momentschat.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "1:866549697398:android:024dd3bf3b81d1adf78857"
+        };
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database(app);
+
+        // تحميل الصوتيات
+        function loadAudios() {
+            const audioList = document.getElementById("audioList");
+            const audiosRef = db.ref("mtnbi_sound").orderByKey();
+
+            audiosRef.once("value", (snapshot) => {
+                const audios = snapshot.val();
+                if (audios) {
+                    for (let id in audios) {
+                        const audio = audios[id];
+                        const item = createMediaItem(audio.image, audio.title, `audio.html?id=${id}`);
+                        item.className = "item audio-item";
+
+                        audioList.appendChild(item);
+                    }
+                }
+            });
+        }
+
+        // تحميل المرئيات
+        function loadVideos() {
+            const videoList = document.getElementById("videoList");
+            const videosRef = db.ref("mtnbi_video").orderByKey();
+
+            videosRef.once("value", (snapshot) => {
+                const videos = snapshot.val();
+                if (videos) {
+                    for (let id in videos) {
+                        const video = videos[id];
+                        const item = createMediaItem(video.image, video.title, `video.html?id=${id}`);
+                        item.className = "item video-item";
+                        videoList.appendChild(item);
+                    }
+                }
+            });
+        }
+
+        // تحميل الكتب
+        function loadBooks() {
+            const bookGrid = document.getElementById("bookGrid");
+            const booksRef = db.ref("mtnbi_book").orderByKey();
+
+            booksRef.once("value", (snapshot) => {
+                const books = snapshot.val();
+                if (books) {
+                    for (let id in books) {
+                        const book = books[id];
+                        const item = createMediaItem(book.image, book.title, `book.html?id=${id}`);
+                        bookGrid.appendChild(item);
+                    }
+                }
+            });
+        }
+
+        // تحميل الأشعار
+        function loadPoems() {
+            const bookList = document.getElementById("bookList");
+            const poemsRef = db.ref("mtnbi_sh3er").orderByKey();
+
+            poemsRef.once("value", (snapshot) => {
+                const poems = snapshot.val();
+                if (poems) {
+                    for (let id in poems) {
+                        const poem = poems[id];
+                        const item = createMediaItem(poem.image, poem.title, `sher.html?id=${id}`);
+                        bookList.appendChild(item);
+                    }
+                }
+            });
+        }
+
+        // إنشاء عنصر وسائط
+        function createMediaItem(image, title, link) {
+            const div = document.createElement("div");
+            div.classList.add("item");
+            const a = document.createElement("a");
+            a.href = link;
+            a.innerHTML = `<img src="${image}" alt="${title}"><div class="item-title">${title}</div>`;
+            div.appendChild(a);
+            return div;
+        }
+
+        // استدعاء دوال التحميل
+        loadAudios();
+        loadVideos();
+        loadBooks();
+        loadPoems();
+    </script>
+</body>
+</html>
