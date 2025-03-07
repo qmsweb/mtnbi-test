@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مشغل الفيديو</title>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <style>
+        body {
+            background-color: #f9f9f9;
+            color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 0vh;
+            margin: 0;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #000;
+        }
+        #player {
+            width: 100%;
+            max-width: 800px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1 id="videoTitle">جاري تحميل الفيديو...</h1>
+    <video id="player" playsinline controls autoplay allowfullscreen>
+        <source src="" type="video/mp4" />
+    </video>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+    <script>
+        // إعداد Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDErdK7mjrXUtBYR28U7JIpbFi5RHWM9zM",
+            authDomain: "momentschat.firebaseapp.com",
+            databaseURL: "https://momentschat.firebaseio.com",
+            projectId: "momentschat",
+            storageBucket: "momentschat.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "1:866549697398:android:024dd3bf3b81d1adf78857"
+        };
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database(app);
+
+        // استخراج "id" من رابط الصفحة
+        const urlParams = new URLSearchParams(window.location.search);
+        const videoId = urlParams.get('id'); // الحصول على id من الرابط
+
+        if (videoId) {
+            db.ref(`mtnbi_video/${videoId}`).once("value").then((snapshot) => {
+                if (snapshot.exists()) {
+                    const videoData = snapshot.val();
+                    const videoSource = document.querySelector('#player source');
+                    const videoTitle = document.getElementById('videoTitle');
+                  
+                       
+
+                    // تحديث الرابط والعنوان
+                    videoSource.src = videoData.vidlink;
+                    videoTitle.innerText = videoData.title || "بدون عنوان";
+                  
+
+                    // تحميل الفيديو
+                    const player = new Plyr('#player', {
+                        fullscreen: {
+                            enabled: true,
+                            fallback: true,
+                            iosNative: true
+                        }
+                    });
+                    document.getElementById('player').load();
+                } else {
+                    document.getElementById('videoTitle').innerText = "خطأ 404: الفيديو غير موجود";
+                }
+            }).catch((error) => {
+                console.error("خطأ في جلب بيانات الفيديو:", error);
+                alert("حدث خطأ في تحميل الفيديو.");
+            });
+        } else {
+            alert("المعرف غير موجود في الرابط!");
+        }
+    </script>
+</body>
+</html>
