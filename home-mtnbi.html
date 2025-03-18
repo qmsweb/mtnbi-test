@@ -94,6 +94,15 @@
     </style>
 </head>
 <body>
+    <div id="navbar-container"></div>
+<script>
+    fetch('navbar.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('navbar-container').innerHTML = data;
+        });
+</script>
+
     <h1> </h1>
 
     <div class="section">
