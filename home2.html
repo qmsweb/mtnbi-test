@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة متنبي - الرئيسية</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #e74c3c;
+            --accent-color: #3498db;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --text-color: #333;
+            --text-light: #7f8c8d;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f5f5f5;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        /* تحسينات الشريط العلوي */
+        #navbar-container {
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+            color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        /* أقسام المحتوى */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
+            color: white;
+        }
+        
+        .section-title img {
+            width: 30px;
+            height: 30px;
+            margin-left: 10px;
+        }
+        
+        .section-title h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        /* تحسينات قوائم العناصر */
+        .horizontal-list {
+            display: flex;
+            overflow-x: auto;
+            padding: 20px;
+            gap: 20px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--accent-color) var(--light-color);
+        }
+        
+        .horizontal-list::-webkit-scrollbar {
+            height: 8px;
+        }
+        
+        .horizontal-list::-webkit-scrollbar-track {
+            background: var(--light-color);
+            border-radius: 10px;
+        }
+        
+        .horizontal-list::-webkit-scrollbar-thumb {
+            background-color: var(--accent-color);
+            border-radius: 10px;
+        }
+        
+        .item {
+            min-width: 180px;
+            width: 180px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .item a {
+            text-decoration: none;
+            color: var(--text-color);
+            display: block;
+        }
+        
+        .item img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .item-title {
+            padding: 12px;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        /* تأثيرات خاصة على أنواع العناصر */
+        .audio-item {
+            border-bottom: 3px solid var(--secondary-color);
+        }
+        
+        .video-item {
+            border-bottom: 3px solid var(--accent-color);
+        }
+        
+        /* تحسينات للهواتف */
+        @media (max-width: 768px) {
+            .item {
+                min-width: 150px;
+                width: 150px;
+            }
+            
+            .item img {
+                height: 200px;
+            }
+            
+            .section-title h2 {
+                font-size: 1.3rem;
+            }
+        }
+        
+        /* شريط التقدم أثناء التحميل */
+        .loading-bar {
+            height: 4px;
+            background: linear-gradient(to right, var(--accent-color), var(--secondary-color));
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            z-index: 1001;
+            transition: width 0.4s ease;
+        }
+        
+        /* زر العودة للأعلى */
+        .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: var(--secondary-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background: var(--primary-color);
+            transform: translateY(-3px);
+        }
+        
+        /* رسالة ترحيبية */
+        .welcome-message {
+            background: linear-gradient(135deg, var(--primary-color), var(--dark-color));
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .welcome-message h1 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .welcome-message p {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .welcome-message::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .welcome-message::after {
+            content: "";
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+        
+        /* تأثيرات عند التحميل */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .section {
+            animation: fadeIn 0.6s ease forwards;
+            opacity: 0;
+        }
+        
+        .section:nth-child(2) { animation-delay: 0.1s; }
+        .section:nth-child(3) { animation-delay: 0.2s; }
+        .section:nth-child(4) { animation-delay: 0.3s; }
+        .section:nth-child(5) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <div class="loading-bar" id="loadingBar"></div>
+    
+    <div id="navbar-container"></div>
+    
+    <div class="container">
+        <div class="welcome-message">
+            <h1>مرحباً بكم في منصة متنبي</h1>
+            <p>منصة ثقافية شاملة تجمع بين المرئيات والصوتيات والكتب والأشعار، لنشر المعرفة والثقافة العربية الأصيلة</p>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg77seeJqNFHhHhtUDHQnrzbWiBwNwFI9b9VKqdt-6Z3sFU_amaGCjP4mhGQQhWEJ4Tp_aoZEWuGITNI40Fq9cVq72uPtjZ2bs4yws0ZWjZkYcNHwkoVuw_fAmoSshwtfYYbdcZ1hdGvwI8AkNR36CElVThW8-QmV4vytsm3yY5S_QnRMCoZly7EcACs7Y/s1600/play_ic.png" alt="مرئيات">
+                <h2>المرئيات</h2>
+            </div>
+            <div class="horizontal-list" id="videoList">
+                <div class="item video-item placeholder">
+                    <div class="placeholder-img"></div>
+                    <div class="item-title">جاري التحميل...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjlWCuG9QOc8CJ80gJrho1jfFXrnK5K0vbmfPE8i0iByMQbtcwzk8nNnv-E0y5v1p-BE2b_LBgFZKL4Z8Ubw77k-nJexY4st0yRhtQ8zLT0PfYP4GKvVscL6zN-_nVbrr9Gc4Gj7M9JBG4hT9D0tREEAKj0nKGWu1v951xAFqa27GnK7ciqsNmytv5zo7Q/s1600/music_icon.png" alt="صوتيات">
+                <h2>الصوتيات</h2>
+            </div>
+            <div class="horizontal-list" id="audioList">
+                <div class="item audio-item placeholder">
+                    <div class="placeholder-img"></div>
+                    <div class="item-title">جاري التحميل...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhiIPXSIrOuS96qjNIgZE8qQulMm7s7HPuskqZGjRS9FYKvcY2iNUDIgSxNK6Vzrd21AhDG4dekjSOKAFF7ctkmjBGoHYeeOXsmr2YwERvtYy4qx4SX9lsOrSiloU7nIU9KsizHhlkw-XYVLxE_HYzc_BjY1bddzh2cG2tu2r9-UQ-5jgA14tKHCbvK6yk/s1600/books_tw8.png" alt="كتب">
+                <h2>الكتب</h2>
+            </div>
+            <div class="horizontal-list" id="bookGrid">
+                <div class="item placeholder">
+                    <div class="placeholder-img"></div>
+                    <div class="item-title">جاري التحميل...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjlH0-Uym4v2NYT95edhTV7qSDTW7nH8AaWYJCDMnJ2dSY7MS576BLk4Yhi9lsd0eMIKvzSikdFIxdg4YQMldGFMw-HbsvtRtqsQB31glAjikUuWbzr5qQtbbBmyQLDD3l6QA9RXDFpXvQ-oTrFbvEfOtXPxmJxTI8PDy096ETme6zQ0fvT4l9s8_G7lss/s1600/article_ic.png" alt="أشعار">
+                <h2>الأشعار</h2>
+            </div>
+            <div class="horizontal-list" id="bookList">
+                <div class="item placeholder">
+                    <div class="placeholder-img"></div>
+                    <div class="item-title">جاري التحميل...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+
+    <script>
+        // إعداد Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDErdK7mjrXUtBYR28U7JIpbFi5RHWM9zM",
+            authDomain: "momentschat.firebaseapp.com",
+            databaseURL: "https://momentschat.firebaseio.com",
+            projectId: "momentschat",
+            storageBucket: "momentschat.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "1:866549697398:android:024dd3bf3b81d1adf78857"
+        };
+        
+        // تهيئة التطبيق
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database(app);
+        
+        // تحميل شريط التنقل
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('navbar.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('navbar-container').innerHTML = data;
+                    simulateLoading();
+                });
+                
+            // إعداد زر العودة للأعلى
+            setupBackToTopButton();
+        });
+        
+        // محاكاة شريط التقدم
+        function simulateLoading() {
+            const loadingBar = document.getElementById('loadingBar');
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    loadingBar.style.opacity = '0';
+                    setTimeout(() => loadingBar.style.display = 'none', 300);
+                } else {
+                    width += 10;
+                    loadingBar.style.width = width + '%';
+                }
+            }, 100);
+        }
+        
+        // إعداد زر العودة للأعلى
+        function setupBackToTopButton() {
+            const backToTopButton = document.getElementById('backToTop');
+            
+            window.addEventListener('scroll', () => {
+                if (window.pageYOffset > 300) {
+                    backToTopButton.classList.add('visible');
+                } else {
+                    backToTopButton.classList.remove('visible');
+                }
+            });
+            
+            backToTopButton.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+        
+        // تحميل الصوتيات
+        function loadAudios() {
+            const audioList = document.getElementById("audioList");
+            audioList.innerHTML = ''; // مسح العناصر المؤقتة
+            
+            const audiosRef = db.ref("mtnbi_sound").orderByKey();
+            audiosRef.once("value", (snapshot) => {
+                const audios = snapshot.val();
+                if (audios) {
+                    for (let id in audios) {
+                        const audio = audios[id];
+                        const item = createMediaItem(audio.image, audio.title, `audio.html?id=${id}`);
+                        item.className = "item audio-item";
+                        audioList.appendChild(item);
+                    }
+                } else {
+                    audioList.innerHTML = '<div class="no-items">لا توجد صوتيات متاحة حالياً</div>';
+                }
+            });
+        }
+        
+        // تحميل المرئيات
+        function loadVideos() {
+            const videoList = document.getElementById("videoList");
+            videoList.innerHTML = ''; // مسح العناصر المؤقتة
+            
+            const videosRef = db.ref("mtnbi_video").orderByKey();
+            videosRef.once("value", (snapshot) => {
+                const videos = snapshot.val();
+                if (videos) {
+                    for (let id in videos) {
+                        const video = videos[id];
+                        const item = createMediaItem(video.image, video.title, `video.html?id=${id}`);
+                        item.className = "item video-item";
+                        videoList.appendChild(item);
+                    }
+                } else {
+                    videoList.innerHTML = '<div class="no-items">لا توجد مرئيات متاحة حالياً</div>';
+                }
+            });
+        }
+        
+        // تحميل الكتب
+        function loadBooks() {
+            const bookGrid = document.getElementById("bookGrid");
+            bookGrid.innerHTML = ''; // مسح العناصر المؤقتة
+            
+            const booksRef = db.ref("mtnbi_book").orderByKey();
+            booksRef.once("value", (snapshot) => {
+                const books = snapshot.val();
+                if (books) {
+                    for (let id in books) {
+                        const book = books[id];
+                        const item = createMediaItem(book.image, book.title, `book.html?id=${id}`);
+                        bookGrid.appendChild(item);
+                    }
+                } else {
+                    bookGrid.innerHTML = '<div class="no-items">لا توجد كتب متاحة حالياً</div>';
+                }
+            });
+        }
+        
+        // تحميل الأشعار
+        function loadPoems() {
+            const bookList = document.getElementById("bookList");
+            bookList.innerHTML = ''; // مسح العناصر المؤقتة
+            
+            const poemsRef = db.ref("mtnbi_sh3er").orderByKey();
+            poemsRef.once("value", (snapshot) => {
+                const poems = snapshot.val();
+                if (poems) {
+                    for (let id in poems) {
+                        const poem = poems[id];
+                        const item = createMediaItem(poem.image, poem.title, `sher.html?id=${id}`);
+                        bookList.appendChild(item);
+                    }
+                } else {
+                    bookList.innerHTML = '<div class="no-items">لا توجد أشعار متاحة حالياً</div>';
+                }
+            });
+        }
+        
+        // إنشاء عنصر وسائط
+        function createMediaItem(image, title, link) {
+            const div = document.createElement("div");
+            div.classList.add("item");
+            
+            const a = document.createElement("a");
+            a.href = link;
+            
+            const img = document.createElement("img");
+            img.src = image;
+            img.alt = title;
+            img.loading = "lazy"; // تحميل متكاسل للصور
+            
+            const titleDiv = document.createElement("div");
+            titleDiv.className = "item-title";
+            titleDiv.textContent = title;
+            
+            a.appendChild(img);
+            a.appendChild(titleDiv);
+            div.appendChild(a);
+            
+            return div;
+        }
+        
+        // استدعاء دوال التحميل بعد تحميل الصفحة
+        window.addEventListener('load', function() {
+            loadAudios();
+            loadVideos();
+            loadBooks();
+            loadPoems();
+        });
+    </script>
+</body>
+</html>
